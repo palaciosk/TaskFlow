@@ -13,7 +13,8 @@ export const sendSMS = async (phoneNumber, message) => {
   }
 
   try {
-    const apiUrl = import.meta.env.VITE_SMS_API_URL || 'http://localhost:3001/api/send-sms';
+    // Use relative path for Vercel Serverless Function
+    const apiUrl = '/api/send-sms';
 
     const response = await fetch(apiUrl, {
       method: 'POST',
