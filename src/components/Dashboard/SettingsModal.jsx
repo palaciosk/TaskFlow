@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase/config';
-import { X, Phone, Bell, Check, Save, Palette } from 'lucide-react';
+import { X, Phone, Bell, Check, Save, Palette, Send } from 'lucide-react';
+import { sendSMS } from '../../utils/sms';
 import './SettingsModal.css';
 
 const SettingsModal = ({ onClose, onUpdate }) => {
@@ -10,6 +11,7 @@ const SettingsModal = ({ onClose, onUpdate }) => {
     const [selectedTheme, setSelectedTheme] = useState('dark');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [testing, setTesting] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
     useEffect(() => {
@@ -177,6 +179,40 @@ const SettingsModal = ({ onClose, onUpdate }) => {
                                 />
                                 <small>Include country code (e.g., +1 for US)</small>
                             </div>
+
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    if (!phoneNumber) {
+                                        setMessage({ type: 'error', text: 'Please enter a phone number first' });
+                                        return;
+                                    }
+                                    setTesting(true);
+                                    try {
+                                        setMessage({ type: '', text: '' });
+                                        const result = await sendSMS(phoneNumber, "🔔 This is a test message from TaskFlow! Your notifications are working correctly.");
+                                        if (result) {
+                                            setMessage({ type: 'success', text: 'Test message sent! Check your WhatsApp.' });
+                                        } else {
+                                            throw new Error('Failed to send test message');
+                                        }
+                                    } catch (error) {
+                                        setMessage({ type: 'error', text: 'Failed to send test message. Check console for details.' });
+                                    } finally {
+                                        setTesting(false);
+                                    }
+                                }}
+                                className="btn btn-outline"
+                                style={{ marginTop: '10px', width: '100%' }}
+                                disabled={testing || !phoneNumber}
+                            >
+                                {testing ? 'Sending...' : (
+                                    <>
+                                        <Send size={16} />
+                                        Send Test Message
+                                    </>
+                                )}
+                            </button>
                         </div>
 
                         <div className="settings-section">
