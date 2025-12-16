@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+// Version: FIXED (Please upload this file)
 
 // Initialize Gemini AI lazily
 const getGenAI = () => {
