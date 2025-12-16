@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Sparkles, RefreshCw } from 'lucide-react';
-import { getProductivityInsights } from '../../firebase/gemini';
+import { getProductivityInsights } from '../../firebase/ai-service';
 import './AIInsights.css';
 
 const AIInsights = ({ tasks }) => {
@@ -38,8 +38,8 @@ const AIInsights = ({ tasks }) => {
     highPriority: tasks.filter(t => t.priority === 'high' && t.status === 'pending').length
   };
 
-  const completionRate = taskSummary.total > 0 
-    ? Math.round((taskSummary.completed / taskSummary.total) * 100) 
+  const completionRate = taskSummary.total > 0
+    ? Math.round((taskSummary.completed / taskSummary.total) * 100)
     : 0;
 
   return (
