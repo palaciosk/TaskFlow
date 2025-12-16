@@ -16,7 +16,7 @@ export const breakDownTask = async (taskDescription) => {
     const genAI = getGenAI();
     if (!genAI) return []; // Return empty if no key or initialization failed
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const prompt = `Break down the following task into smaller, actionable subtasks. Return only a JSON array of subtasks, each with a "title" and "description" field. Task: ${taskDescription}`;
 
     const result = await model.generateContent(prompt);
@@ -47,7 +47,7 @@ export const getProductivityInsights = async (tasks) => {
     const genAI = getGenAI();
     if (!genAI) return 'AI insights are currently unavailable (Missing API Key).';
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const taskSummary = tasks.map(t => ({
       title: t.title,
