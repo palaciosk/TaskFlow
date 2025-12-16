@@ -3,7 +3,7 @@ import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../../firebase/config';
 import { X, Calendar, Flag, Sparkles, Clock, Bell } from 'lucide-react';
 import { format } from 'date-fns';
-import { breakDownTask } from '../../firebase/gemini';
+import { breakDownTask } from '../../firebase/ai-service';
 import { scheduleReminder } from '../../utils/reminders';
 import CalendarPicker from './CalendarPicker';
 import './TaskForm.css';
