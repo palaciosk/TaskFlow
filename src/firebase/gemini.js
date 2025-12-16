@@ -1,7 +1,14 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+// Initialize Gemini AI lazily
+const getGenAI = () => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    console.warn('Gemini API Key is missing');
+    return null;
+  }
+  return new GoogleGenerativeAI(apiKey);
+};
 
 export const breakDownTask = async (taskDescription) => {
   try {
