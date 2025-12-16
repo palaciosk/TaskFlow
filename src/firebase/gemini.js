@@ -12,58 +12,56 @@ const getGenAI = () => {
 
 export const breakDownTask = async (taskDescription) => {
   try {
-    try {
-      const genAI = getGenAI();
-      if (!genAI) return []; // Return empty if no key or initialization failed
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-      const prompt = `Break down the following task into smaller, actionable subtasks. Return only a JSON array of subtasks, each with a "title" and "description" field. Task: ${taskDescription}`;
+    const genAI = getGenAI();
+    if (!genAI) return []; // Return empty if no key or initialization failed
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const prompt = `Break down the following task into smaller, actionable subtasks. Return only a JSON array of subtasks, each with a "title" and "description" field. Task: ${taskDescription}`;
 
-      // Try to extract JSON from the response
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
 
-      // Fallback: create a simple breakdown
-      return [
-        { title: 'Research', description: 'Research and gather information' },
-        { title: 'Plan', description: 'Create a detailed plan' },
-        { title: 'Execute', description: 'Execute the main task' },
-        { title: 'Review', description: 'Review and refine' }
-      ];
-    } catch (error) {
-      console.error('Error breaking down task:', error);
-      return [];
+    // Try to extract JSON from the response
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
     }
-  };
 
-  export const getProductivityInsights = async (tasks) => {
-    try {
-      try {
-        const genAI = getGenAI();
-        if (!genAI) return 'AI insights are currently unavailable (Missing API Key).';
+    // Fallback: create a simple breakdown
+    return [
+      { title: 'Research', description: 'Research and gather information' },
+      { title: 'Plan', description: 'Create a detailed plan' },
+      { title: 'Execute', description: 'Execute the main task' },
+      { title: 'Review', description: 'Review and refine' }
+    ];
+  } catch (error) {
+    console.error('Error breaking down task:', error);
+    return [];
+  }
+};
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+export const getProductivityInsights = async (tasks) => {
+  try {
+    const genAI = getGenAI();
+    if (!genAI) return 'AI insights are currently unavailable (Missing API Key).';
 
-        const taskSummary = tasks.map(t => ({
-          title: t.title,
-          status: t.status,
-          dueDate: t.dueDate,
-          priority: t.priority
-        }));
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
-        const prompt = `Analyze the following tasks and provide productivity insights. Be concise and actionable. Tasks: ${JSON.stringify(taskSummary)}`;
+    const taskSummary = tasks.map(t => ({
+      title: t.title,
+      status: t.status,
+      dueDate: t.dueDate,
+      priority: t.priority
+    }));
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        return response.text();
-      } catch (error) {
-        console.error('Error getting insights:', error);
-        return 'Unable to generate insights at this time.';
-      }
-    };
+    const prompt = `Analyze the following tasks and provide productivity insights. Be concise and actionable. Tasks: ${JSON.stringify(taskSummary)}`;
 
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    return response.text();
+  } catch (error) {
+    console.error('Error getting insights:', error);
+    return 'Unable to generate insights at this time.';
+  }
+};
